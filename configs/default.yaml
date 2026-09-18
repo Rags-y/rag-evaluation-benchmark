@@ -1,0 +1,36 @@
+project:
+  name: rag-evaluation-benchmark
+  seed: 42
+
+corpus:
+  name: python-documentation
+  source: https://docs.python.org/3/
+
+  documents:
+    - id: python-introduction
+      title: Python Introduction
+      url: https://docs.python.org/3/tutorial/introduction.html
+
+    - id: python-control-flow
+      title: Control Flow Tools
+      url: https://docs.python.org/3/tutorial/controlflow.html
+
+    - id: python-data-structures
+      title: Data Structures
+      url: https://docs.python.org/3/tutorial/datastructures.html
+
+    - id: python-classes
+      title: Classes
+      url: https://docs.python.org/3/tutorial/classes.html
+
+    - id: python-input-output
+      title: Input and Output
+      url: https://docs.python.org/3/tutorial/inputoutput.html
+
+    - id: python-errors
+      title: Errors and Exceptions
+      url: https://docs.python.org/3/tutorial/errors.html
+
+chunking:
+  chunk_size: 1200
+  chunk_overlap: 200
