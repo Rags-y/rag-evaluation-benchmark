@@ -12,6 +12,7 @@ __pycache__/
 # Generated corpus
 data/raw/
 data/processed/
+data/index/
 
 # Generated results
 results/
@@ -24,4 +25,3 @@ reports/
 
 # OS
 .DS_Store
-Thumbs.db

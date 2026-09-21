@@ -11,9 +11,16 @@ class DocumentLoader:
 
     def __init__(self, raw_dir: str | Path):
         self.raw_dir = Path(raw_dir)
-        self.raw_dir.mkdir(parents=True, exist_ok=True)
+        self.raw_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
 
-    def download(self, url: str, document_id: str) -> Path:
+    def download(
+        self,
+        url: str,
+        document_id: str,
+    ) -> Path:
         """Download a document unless it already exists locally."""
 
         output_path = self.raw_dir / f"{document_id}.html"
@@ -28,12 +35,12 @@ class DocumentLoader:
                 "User-Agent": "RAG-Evaluation-Benchmark/1.0"
             },
         )
+
         response.raise_for_status()
 
-        output_path.write_text(
-            response.text,
-            encoding="utf-8",
-        )
+        # Preserve the original response bytes so that
+        # UTF-8 characters are not corrupted.
+        output_path.write_bytes(response.content)
 
         return output_path
 
@@ -48,10 +55,17 @@ class DocumentLoader:
 
         html_path = Path(html_path)
 
-        html = html_path.read_text(encoding="utf-8")
+        html = html_path.read_text(
+            encoding="utf-8"
+        )
 
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(
+            html,
+            "html.parser",
+        )
 
+        # Remove elements that are not part of the
+        # useful documentation content.
         for element in soup(
             ["script", "style", "nav", "footer", "header"]
         ):
@@ -81,7 +95,9 @@ class DocumentLoader:
         )
 
     @staticmethod
-    def _clean_text(text: str) -> str:
+    def _clean_text(
+        text: str,
+    ) -> str:
         """Normalize excessive whitespace."""
 
         lines = [

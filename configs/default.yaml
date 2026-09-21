@@ -34,3 +34,7 @@ corpus:
 chunking:
   chunk_size: 1200
   chunk_overlap: 200
+
+retrieval:
+  embedding_model: all-MiniLM-L6-v2
+  top_k: 5
