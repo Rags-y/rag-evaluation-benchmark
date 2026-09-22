@@ -1,0 +1,330 @@
+{
+  "dataset_name": "python_documentation_rag_benchmark",
+  "version": "1.0",
+  "description": "Evaluation questions grounded in the Python documentation corpus used by the RAG benchmark.",
+  "questions": [
+    {
+      "question_id": "q001",
+      "question": "What is the most versatile compound data type in Python?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "The list is the most versatile compound data type in Python.",
+      "source_document_ids": ["python-introduction", "python-data-structures"]
+    },
+    {
+      "question_id": "q002",
+      "question": "How are Python lists written?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "Python lists are written as comma-separated values between square brackets.",
+      "source_document_ids": ["python-introduction"]
+    },
+    {
+      "question_id": "q003",
+      "question": "Can Python lists contain items of different types?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "Yes. Python lists can contain items of different types, although they usually contain items of the same type.",
+      "source_document_ids": ["python-introduction"]
+    },
+    {
+      "question_id": "q004",
+      "question": "What does indexing a Python list return?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "Indexing a list returns the item at the specified position.",
+      "source_document_ids": ["python-introduction"]
+    },
+    {
+      "question_id": "q005",
+      "question": "What does slicing a Python list return?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "Slicing a list returns a new list containing the selected elements.",
+      "source_document_ids": ["python-introduction"]
+    },
+    {
+      "question_id": "q006",
+      "question": "Which list method adds an item to the end of a list?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "The append() method adds an item to the end of a list.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q007",
+      "question": "What does list.pop() do when no index is specified?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "It removes and returns the last item in the list.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q008",
+      "question": "Which list method inserts an item at a given position?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "The insert() method inserts an item at a given position.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q009",
+      "question": "What happens when list.remove() cannot find the specified value?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "It raises a ValueError.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q010",
+      "question": "Are Python tuples mutable?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "No. Tuples are immutable.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q011",
+      "question": "What is a tuple in Python?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "A tuple is a sequence of values separated by commas.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q012",
+      "question": "What does the try statement allow you to do?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "The try statement allows you to test a block of code for errors.",
+      "source_document_ids": ["python-errors"]
+    },
+    {
+      "question_id": "q013",
+      "question": "What keyword is used to create an exception handler?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "The except keyword is used to define exception handlers.",
+      "source_document_ids": ["python-errors"]
+    },
+    {
+      "question_id": "q014",
+      "question": "What does the else clause in a try statement do?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "The else clause runs when no exception occurs in the try block.",
+      "source_document_ids": ["python-errors"]
+    },
+    {
+      "question_id": "q015",
+      "question": "What does the finally clause do?",
+      "question_type": "direct_factual",
+      "answerable": true,
+      "expected_answer": "The finally clause executes as the last task before the try statement completes, whether or not an exception occurred.",
+      "source_document_ids": ["python-errors"]
+    },
+
+    {
+      "question_id": "q016",
+      "question": "A Python list is mutable and supports indexing. What does this imply about changing an existing element by position?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "Because lists are mutable and support indexing, an existing element can be changed by assigning a new value to its indexed position.",
+      "source_document_ids": ["python-introduction", "python-data-structures"]
+    },
+    {
+      "question_id": "q017",
+      "question": "If append() adds an item to a list and pop() without an index removes the last item, what behavior can these methods provide when used together?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "Together they can implement stack behavior: append() adds an item to the top and pop() retrieves the most recently added item.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q018",
+      "question": "Python lists and strings both support indexing and slicing. What broader category do they belong to?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "They are both sequence data types.",
+      "source_document_ids": ["python-introduction", "python-data-structures"]
+    },
+    {
+      "question_id": "q019",
+      "question": "If a tuple cannot be modified after creation but can contain a list, what kind of object can remain mutable inside the tuple?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "A list contained inside the tuple can remain mutable even though the tuple itself is immutable.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q020",
+      "question": "If list.remove() raises ValueError when a value is absent, which exception should code handling a missing list value consider catching?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "It should consider catching ValueError.",
+      "source_document_ids": ["python-data-structures", "python-errors"]
+    },
+    {
+      "question_id": "q021",
+      "question": "If a try block raises an exception, which block is used to handle that exception and which block can run regardless of whether an exception occurred?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "The except block handles the exception, while the finally block can run regardless of whether an exception occurred.",
+      "source_document_ids": ["python-errors"]
+    },
+    {
+      "question_id": "q022",
+      "question": "A list is used as a stack with append() and pop(). Which element is retrieved first when several elements have been added?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "The most recently added element is retrieved first, following last-in, first-out behavior.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q023",
+      "question": "If a Python sequence supports slicing and the slice operation returns a new list, what operation can be used to obtain a subset without replacing the original list?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "A slice operation can be used to obtain a subset as a new list.",
+      "source_document_ids": ["python-introduction"]
+    },
+    {
+      "question_id": "q024",
+      "question": "If a program needs to test code for errors and then execute cleanup code regardless of an exception, which two parts of a try statement are relevant?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "The try block tests the code for errors and the finally clause provides code that runs regardless of whether an exception occurred.",
+      "source_document_ids": ["python-errors"]
+    },
+    {
+      "question_id": "q025",
+      "question": "If integers cannot be compared with strings during sorting, what can happen when a list contains values such as None, a string, and an integer?",
+      "question_type": "multi_hop",
+      "answerable": true,
+      "expected_answer": "The list cannot be sorted because the different types cannot all be compared with one another.",
+      "source_document_ids": ["python-data-structures"]
+    },
+
+    {
+      "question_id": "q026",
+      "question": "What is the capital of France?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+    {
+      "question_id": "q027",
+      "question": "Who is the current president of the United States?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+    {
+      "question_id": "q028",
+      "question": "What is the population of India?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+    {
+      "question_id": "q029",
+      "question": "What is the boiling point of water at sea level?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+    {
+      "question_id": "q030",
+      "question": "Who invented the telephone?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+    {
+      "question_id": "q031",
+      "question": "What is the tallest mountain in the world?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+    {
+      "question_id": "q032",
+      "question": "What is the current price of Bitcoin?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+    {
+      "question_id": "q033",
+      "question": "Who won the most recent FIFA World Cup?",
+      "question_type": "unanswerable",
+      "answerable": false,
+      "expected_answer": null,
+      "source_document_ids": []
+    },
+
+    {
+      "question_id": "q034",
+      "question": "Python lists are immutable, so what method creates a new list whenever you call append()?",
+      "question_type": "misleading",
+      "answerable": true,
+      "expected_answer": "The premise is incorrect. Python lists are mutable, and append() adds an item to the existing list rather than creating a new list.",
+      "source_document_ids": ["python-introduction", "python-data-structures"]
+    },
+    {
+      "question_id": "q035",
+      "question": "Since tuples can be changed after creation, which tuple method should be used to replace one of its elements?",
+      "question_type": "misleading",
+      "answerable": true,
+      "expected_answer": "The premise is incorrect. Tuples are immutable and do not support replacing an element after creation.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q036",
+      "question": "What Python list method sorts integers and strings together by converting every value automatically to a comparable type?",
+      "question_type": "misleading",
+      "answerable": true,
+      "expected_answer": "The premise is incorrect. The documentation does not describe such automatic conversion, and values such as integers and strings cannot necessarily be compared for sorting.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q037",
+      "question": "The finally block only executes when an exception occurs. What should you put there to handle successful execution?",
+      "question_type": "misleading",
+      "answerable": true,
+      "expected_answer": "The premise is incorrect. The finally clause executes regardless of whether an exception occurred.",
+      "source_document_ids": ["python-errors"]
+    },
+    {
+      "question_id": "q038",
+      "question": "Which Python keyword silently terminates a loop whenever it encounters an exception?",
+      "question_type": "misleading",
+      "answerable": true,
+      "expected_answer": "The premise is incorrect. The documentation does not describe a keyword that silently terminates a loop in response to an exception in this way.",
+      "source_document_ids": ["python-control-flow", "python-errors"]
+    },
+    {
+      "question_id": "q039",
+      "question": "Python lists are efficient queues, so why does the documentation recommend using lists instead of collections.deque for queue operations?",
+      "question_type": "misleading",
+      "answerable": true,
+      "expected_answer": "The premise is incorrect. The documentation states that lists are not efficient for queue operations and recommends collections.deque for efficient appends and pops from both ends.",
+      "source_document_ids": ["python-data-structures"]
+    },
+    {
+      "question_id": "q040",
+      "question": "Which Python list operation guarantees that every possible pair of values can be compared successfully before sorting?",
+      "question_type": "misleading",
+      "answerable": true,
+      "expected_answer": "No such operation is described. Some values cannot be compared, so sorting can raise a TypeError.",
+      "source_document_ids": ["python-data-structures"]
+    }
+  ]
+}
