@@ -1,5 +1,8 @@
 from rag_eval.evaluation_metrics import (
+    answer_correctness,
     answer_exact_match,
+    answer_faithfulness,
+    answer_relevance,
     is_abstention,
     retrieval_document_recall,
     retrieval_precision,
@@ -91,3 +94,72 @@ def test_non_abstention():
     assert not is_abstention(
         "Python lists are mutable sequences."
     )
+
+
+def test_answer_relevance():
+    score = answer_relevance(
+        "What are Python lists?",
+        "Python lists are mutable sequences.",
+    )
+
+    assert score > 0.0
+
+
+def test_answer_relevance_no_overlap():
+    score = answer_relevance(
+        "What are Python lists?",
+        "The weather is sunny today.",
+    )
+
+    assert score == 0.0
+
+
+def test_answer_faithfulness():
+    contexts = [
+        {
+            "text": "Python lists are mutable sequences.",
+        }
+    ]
+
+    score = answer_faithfulness(
+        "Python lists are mutable sequences.",
+        contexts,
+    )
+
+    assert score == 1.0
+
+
+def test_answer_faithfulness_without_context():
+    score = answer_faithfulness(
+        "Python lists are mutable sequences.",
+        [],
+    )
+
+    assert score == 0.0
+
+
+def test_answer_correctness():
+    score = answer_correctness(
+        "Python lists are mutable sequences.",
+        "Python lists are mutable sequences.",
+    )
+
+    assert score == 1.0
+
+
+def test_answer_correctness_partial():
+    score = answer_correctness(
+        "Python lists are mutable.",
+        "Python lists are mutable sequences.",
+    )
+
+    assert 0.0 < score < 1.0
+
+
+def test_answer_correctness_unanswerable():
+    score = answer_correctness(
+        "Paris is the capital of France.",
+        None,
+    )
+
+    assert score == 0.0

@@ -4,7 +4,10 @@ from typing import Any
 
 from .evaluation_dataset import EvaluationDataset
 from .evaluation_metrics import (
+    answer_correctness,
     answer_exact_match,
+    answer_faithfulness,
+    answer_relevance,
     is_abstention,
     retrieval_document_recall,
     retrieval_precision,
@@ -38,9 +41,7 @@ class EvaluationRunner:
                 f"{question}"
             )
 
-            rag_result = self.pipeline.answer(
-                question
-            )
+            rag_result = self.pipeline.answer(question)
 
             contexts = rag_result["contexts"]
             answer = rag_result["answer"]
@@ -62,6 +63,33 @@ class EvaluationRunner:
                 item["expected_answer"],
             )
 
+            relevance = answer_relevance(
+                question,
+                answer,
+            )
+
+            faithfulness = answer_faithfulness(
+                answer,
+                contexts,
+            )
+
+            correctness = answer_correctness(
+                answer,
+                item["expected_answer"],
+            )
+
+            top_retrieval_score = (
+                contexts[0]["score"]
+                if contexts
+                else None
+            )
+
+            abstention_threshold = getattr(
+                self.pipeline,
+                "abstention_threshold",
+                None,
+            )
+
             results.append(
                 {
                     "question_id": item["question_id"],
@@ -72,7 +100,12 @@ class EvaluationRunner:
                     "answer": answer,
                     "retrieval_precision": retrieval_precision_score,
                     "retrieval_document_recall": retrieval_recall,
+                    "answer_relevance": relevance,
+                    "faithfulness": faithfulness,
+                    "correctness": correctness,
                     "abstained": abstained,
+                    "abstention_threshold": abstention_threshold,
+                    "top_retrieval_score": top_retrieval_score,
                     "exact_match": exact_match,
                     "contexts": contexts,
                 }
@@ -88,7 +121,6 @@ class EvaluationRunner:
         """Save evaluation results as JSON."""
 
         output_path = Path(output_path)
-
         output_path.parent.mkdir(
             parents=True,
             exist_ok=True,

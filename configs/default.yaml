@@ -38,3 +38,4 @@ chunking:
 retrieval:
   embedding_model: all-MiniLM-L6-v2
   top_k: 5
+  abstention_threshold: 0.50

@@ -25,6 +25,18 @@ def summarize_results(
                 item["retrieval_document_recall"]
                 for item in items
             ) / len(items),
+            "answer_relevance": sum(
+                item["answer_relevance"]
+                for item in items
+            ) / len(items),
+            "faithfulness": sum(
+                item["faithfulness"]
+                for item in items
+            ) / len(items),
+            "correctness": sum(
+                item["correctness"]
+                for item in items
+            ) / len(items),
             "exact_match": sum(
                 item["exact_match"]
                 for item in items

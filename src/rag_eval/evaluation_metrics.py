@@ -34,7 +34,7 @@ def retrieval_precision(
         return 0.0
 
     if not expected_document_ids:
-     return 0.0
+        return 0.0
 
     expected_ids = set(expected_document_ids)
 
@@ -86,3 +86,87 @@ def is_abstention(
         phrase in normalized_answer
         for phrase in abstention_phrases
     )
+
+
+def answer_relevance(
+    question: str,
+    answer: str,
+) -> float:
+    """Measure lexical overlap between question and answer."""
+
+    question_words = set(
+        question.lower().split()
+    )
+
+    answer_words = set(
+        answer.lower().split()
+    )
+
+    if not question_words or not answer_words:
+        return 0.0
+
+    overlap = question_words.intersection(
+        answer_words
+    )
+
+    return len(overlap) / len(question_words)
+
+
+def answer_faithfulness(
+    answer: str,
+    contexts: list[dict[str, Any]],
+) -> float:
+    """Measure how much of the answer is supported by retrieved context."""
+
+    if not answer.strip():
+        return 0.0
+
+    if not contexts:
+        return 0.0
+
+    context_text = " ".join(
+        context["text"].lower()
+        for context in contexts
+    )
+
+    answer_words = set(
+        answer.lower().split()
+    )
+
+    if not answer_words:
+        return 0.0
+
+    supported_words = sum(
+        1
+        for word in answer_words
+        if word in context_text
+    )
+
+    return supported_words / len(answer_words)
+
+
+def answer_correctness(
+    answer: str,
+    expected_answer: str | None,
+) -> float:
+    """Measure correctness using normalized token overlap."""
+
+    if expected_answer is None:
+        return 0.0
+
+    answer_words = set(
+        answer.lower().split()
+    )
+
+    expected_words = set(
+        expected_answer.lower().split()
+    )
+
+    if not answer_words or not expected_words:
+        return 0.0
+
+    overlap = answer_words.intersection(
+        expected_words
+    )
+
+    return len(overlap) / len(expected_words)

@@ -43,10 +43,13 @@ def main():
     retrieval_config = config["retrieval"]
 
     pipeline = RAGPipeline(
-        index_dir=ROOT_DIR / "data" / "index",
-        top_k=retrieval_config["top_k"],
-        embedding_model=retrieval_config["embedding_model"],
-    )
+    index_dir=ROOT_DIR / "data" / "index",
+    top_k=retrieval_config["top_k"],
+    embedding_model=retrieval_config["embedding_model"],
+    abstention_threshold=retrieval_config.get(
+        "abstention_threshold"
+    ),
+)
 
     dataset = EvaluationDataset(
         ROOT_DIR
@@ -108,7 +111,8 @@ def main():
         print(question_type)
 
         print(
-            f"  Count: {metrics['count']}"
+            f"  Count: "
+            f"{metrics['count']}"
         )
 
         print(
@@ -119,6 +123,21 @@ def main():
         print(
             f"  Retrieval recall: "
             f"{metrics['retrieval_document_recall']:.3f}"
+        )
+
+        print(
+            f"  Answer relevance: "
+            f"{metrics['answer_relevance']:.3f}"
+        )
+
+        print(
+            f"  Faithfulness: "
+            f"{metrics['faithfulness']:.3f}"
+        )
+
+        print(
+            f"  Correctness: "
+            f"{metrics['correctness']:.3f}"
         )
 
         print(

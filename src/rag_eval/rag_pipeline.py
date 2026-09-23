@@ -14,10 +14,7 @@ class MockGenerator:
         if not contexts:
             return "I don't have enough information to answer this question."
 
-        return (
-            "Answer generated from retrieved context. "
-            f"Retrieved {len(contexts)} context chunks."
-        )
+        return contexts[0]["text"]
 
 
 class RAGPipeline:
@@ -29,8 +26,10 @@ class RAGPipeline:
         top_k: int = 5,
         embedding_model: str = "all-MiniLM-L6-v2",
         generator=None,
+        abstention_threshold: float | None = None,
     ):
         self.top_k = top_k
+        self.abstention_threshold = abstention_threshold
 
         self.vector_store = VectorStore(
             model_name=embedding_model,
@@ -70,6 +69,25 @@ class RAGPipeline:
         """Run retrieval and generation."""
 
         contexts = self.retrieve(question)
+
+        if (
+            self.abstention_threshold is not None
+            and (
+                not contexts
+                or contexts[0]["score"]
+                < self.abstention_threshold
+            )
+        ):
+            answer = (
+                "I don't have enough information "
+                "to answer this question."
+            )
+
+            return {
+                "question": question,
+                "answer": answer,
+                "contexts": contexts,
+            }
 
         answer = self.generate(
             question=question,
