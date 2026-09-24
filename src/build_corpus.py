@@ -1,3 +1,4 @@
+import argparse
 import json
 from pathlib import Path
 
@@ -10,53 +11,47 @@ from rag_eval.loader import DocumentLoader
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
 
-def main():
-    config_path = ROOT_DIR / "configs" / "default.yaml"
+def load_config(config_path: str | Path) -> dict:
+    """Load YAML configuration."""
+    with Path(config_path).open("r", encoding="utf-8") as file:
+        return yaml.safe_load(file)
 
-    with config_path.open("r", encoding="utf-8") as file:
-        config = yaml.safe_load(file)
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Build the RAG benchmark corpus."
+    )
+    parser.add_argument(
+        "--config",
+        default="configs/default.yaml",
+        help="Path to YAML configuration.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="data/processed",
+        help="Directory where processed corpus files will be saved.",
+    )
+    args = parser.parse_args()
+
+    config = load_config(ROOT_DIR / args.config)
+
+    output_dir = ROOT_DIR / args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     raw_dir = ROOT_DIR / "data" / "raw"
-    processed_dir = ROOT_DIR / "data" / "processed"
 
-    processed_dir.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+    loader = DocumentLoader(raw_dir=raw_dir)
 
-    loader = DocumentLoader(raw_dir)
+    documents = []
 
-    chunk_config = config["chunking"]
-
-    chunker = TextChunker(
-        chunk_size=chunk_config["chunk_size"],
-        chunk_overlap=chunk_config["chunk_overlap"],
-    )
-
-    all_documents = []
-    all_chunks = []
-
-    seen_urls = set()
-
-    for item in config["corpus"]["documents"]:
-        url = item["url"]
-
-        if url in seen_urls:
-            continue
-
-        seen_urls.add(url)
-
-        print(f"Loading: {item['title']}")
-
+    for document_config in config["corpus"]["documents"]:
         document = loader.load(
-            document_id=item["id"],
-            title=item["title"],
-            url=url,
+            document_id=document_config["id"],
+            title=document_config["title"],
+            url=document_config["url"],
         )
 
-        chunks = chunker.chunk_document(document)
-
-        all_documents.append(
+        documents.append(
             {
                 "document_id": document.document_id,
                 "title": document.title,
@@ -66,29 +61,51 @@ def main():
             }
         )
 
-        all_chunks.extend(
+        print(
+            f"Loaded: {document.title} "
+            f"({len(document.text)} characters)"
+        )
+
+    chunking_config = config["chunking"]
+
+    chunker = TextChunker(
+        chunk_size=chunking_config["chunk_size"],
+        chunk_overlap=chunking_config["chunk_overlap"],
+    )
+
+    chunks = []
+
+    for document in documents:
+        document_chunks = chunker.chunk_document(
+            type(
+                "Document",
+                (),
+                {
+                    "document_id": document["document_id"],
+                    "title": document["title"],
+                    "source_url": document["source_url"],
+                    "text": document["text"],
+                    "metadata": document["metadata"],
+                },
+            )()
+        )
+
+        chunks.extend(
             {
                 "chunk_id": chunk.chunk_id,
                 "document_id": chunk.document_id,
                 "text": chunk.text,
                 "metadata": chunk.metadata,
             }
-            for chunk in chunks
+            for chunk in document_chunks
         )
 
-        print(
-            f"  characters: {len(document.text):,}"
-        )
-        print(
-            f"  chunks: {len(chunks)}"
-        )
-
-    documents_path = processed_dir / "documents.json"
-    chunks_path = processed_dir / "chunks.json"
+    documents_path = output_dir / "documents.json"
+    chunks_path = output_dir / "chunks.json"
 
     documents_path.write_text(
         json.dumps(
-            all_documents,
+            documents,
             indent=2,
             ensure_ascii=False,
         ),
@@ -97,7 +114,7 @@ def main():
 
     chunks_path.write_text(
         json.dumps(
-            all_chunks,
+            chunks,
             indent=2,
             ensure_ascii=False,
         ),
@@ -105,11 +122,19 @@ def main():
     )
 
     print()
-    print("Corpus build complete.")
-    print(f"Documents: {len(all_documents)}")
-    print(f"Chunks: {len(all_chunks)}")
-    print(f"Saved: {documents_path}")
-    print(f"Saved: {chunks_path}")
+    print("=" * 60)
+    print("CORPUS BUILD COMPLETE")
+    print("=" * 60)
+    print(f"Documents: {len(documents)}")
+    print(f"Chunks: {len(chunks)}")
+    print(
+        f"Chunk size: {chunking_config['chunk_size']}"
+    )
+    print(
+        f"Chunk overlap: {chunking_config['chunk_overlap']}"
+    )
+    print(f"Documents saved to: {documents_path}")
+    print(f"Chunks saved to: {chunks_path}")
 
 
 if __name__ == "__main__":

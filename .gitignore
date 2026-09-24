@@ -9,10 +9,12 @@ __pycache__/
 # Environment variables
 .env
 
-# Generated corpus
+# Generated corpus and indexes
 data/raw/
 data/processed/
+data/processed_small/
 data/index/
+data/index_small/
 
 # Generated results
 results/

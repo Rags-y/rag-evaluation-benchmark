@@ -15,11 +15,7 @@ ROOT_DIR = Path(__file__).resolve().parent
 
 def load_config(config_path: str | Path) -> dict:
     """Load YAML configuration."""
-
-    with Path(config_path).open(
-        "r",
-        encoding="utf-8",
-    ) as file:
+    with Path(config_path).open("r", encoding="utf-8") as file:
         return yaml.safe_load(file)
 
 
@@ -34,28 +30,35 @@ def main():
         help="Path to YAML configuration.",
     )
 
+    parser.add_argument(
+        "--index-dir",
+        default="data/index",
+        help="Directory containing the vector index.",
+    )
+
+    parser.add_argument(
+        "--output-name",
+        default="baseline",
+        help="Name used for the output result files.",
+    )
+
     args = parser.parse_args()
 
-    config = load_config(
-        ROOT_DIR / args.config
-    )
+    config = load_config(ROOT_DIR / args.config)
 
     retrieval_config = config["retrieval"]
 
     pipeline = RAGPipeline(
-    index_dir=ROOT_DIR / "data" / "index",
-    top_k=retrieval_config["top_k"],
-    embedding_model=retrieval_config["embedding_model"],
-    abstention_threshold=retrieval_config.get(
-        "abstention_threshold"
-    ),
-)
+        index_dir=ROOT_DIR / args.index_dir,
+        top_k=retrieval_config["top_k"],
+        embedding_model=retrieval_config["embedding_model"],
+        abstention_threshold=retrieval_config.get(
+            "abstention_threshold"
+        ),
+    )
 
     dataset = EvaluationDataset(
-        ROOT_DIR
-        / "data"
-        / "evaluation"
-        / "questions.json"
+        ROOT_DIR / "data" / "evaluation" / "questions.json"
     )
 
     runner = EvaluationRunner(
@@ -74,11 +77,13 @@ def main():
     )
 
     results_path = (
-        results_dir / "baseline_results.json"
+        results_dir
+        / f"{args.output_name}_results.json"
     )
 
     summary_path = (
-        results_dir / "baseline_summary.json"
+        results_dir
+        / f"{args.output_name}_summary.json"
     )
 
     runner.save_results(
@@ -98,53 +103,43 @@ def main():
     print("=" * 80)
     print("RAG EVALUATION COMPLETE")
     print("=" * 80)
-
     print(f"Questions evaluated: {len(results)}")
     print(f"Results saved to: {results_path}")
     print(f"Summary saved to: {summary_path}")
-
     print()
+
     print("Summary:")
 
     for question_type, metrics in summary.items():
         print()
         print(question_type)
-
         print(
-            f"  Count: "
-            f"{metrics['count']}"
+            f"  Count: {metrics['count']}"
         )
-
         print(
             f"  Retrieval precision: "
             f"{metrics['retrieval_precision']:.3f}"
         )
-
         print(
             f"  Retrieval recall: "
             f"{metrics['retrieval_document_recall']:.3f}"
         )
-
         print(
             f"  Answer relevance: "
             f"{metrics['answer_relevance']:.3f}"
         )
-
         print(
             f"  Faithfulness: "
             f"{metrics['faithfulness']:.3f}"
         )
-
         print(
             f"  Correctness: "
             f"{metrics['correctness']:.3f}"
         )
-
         print(
             f"  Exact match: "
             f"{metrics['exact_match']:.3f}"
         )
-
         print(
             f"  Abstention rate: "
             f"{metrics['abstention_rate']:.3f}"
